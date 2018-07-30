@@ -63,7 +63,34 @@ Theta2_grad = zeros(size(Theta2));
 %
 
 y_map = eye(num_labels);
-y = y_map(y, :)
+y = y_map(y, :);
+
+a1 = [ones(m, 1) X];
+z1 = a1 * Theta1';
+a2 = [ones(m, 1) 1 ./ (1 + exp(-z1))];
+z2 = a2 * Theta2';
+a3 = 1 ./ (1 + exp(-z2));
+h = a3;
+
+J = (1/m) * sum(sum(((-y .* log(h)) - ((1-y) .* log(1-h))))) + ...
+	((lambda/ (2*m)) * (sum(sum(Theta1(:, 2:end) .^ 2)) + sum(sum(Theta2(:, 2:end) .^2))));
+
+
+for t = 1:m
+	a1 = [ones(m, 1) X];
+	z1 = a1 * Theta1';
+	a2 = [ones(m, 1) 1 ./ (1 + exp(-z1))];
+	z2 = a2 * Theta2';
+	a3 = 1 ./ (1 + exp(-z2));
+	h = a3;	
+
+	size(sigmoidGradient(z2))
+	del3 = h - y;
+	size(del3 * Theta2)
+	del2 = (del3 * Theta2') .* sigmoidGradient(z2);
+	del1 = (del2 * Theta1) .* sigmoidGradient(z1);
+	Theta2_grad = Theta2_grad + (del3 * a2)
+	Theta1_grad = Theta1 + (del2 * a1)
 
 
 
