@@ -82,7 +82,7 @@ for t = 1:m
 	a2 = [1; sigmoid(z2)];
 	z3 = Theta2 * a2;
 	a3 = sigmoid(z3);
-	yy = ([1:num_labels] == y(t))';	
+	yy = y(t, :)';
 
 	del3 = a3 - yy;
 	del2 = (Theta2' * del3) .* [1; sigmoidGradient(z2)];
@@ -94,8 +94,8 @@ end
 Theta2_grad = (1/m) * Theta2_grad;
 Theta1_grad = (1/m) * Theta1_grad;
 
-% Theta1_grad = (1/m) * Theta1_grad + (lambda/m) * [zeros(size(Theta1, 1), 1) Theta1(:,2:end)];
-% Theta2_grad = (1/m) * Theta2_grad + (lambda/m) * [zeros(size(Theta2, 1), 1) Theta2(:,2:end)];
+Theta1_grad = Theta1_grad + (lambda/m) * [zeros(size(Theta1, 1), 1) Theta1(:,2:end)];
+Theta2_grad = Theta2_grad + (lambda/m) * [zeros(size(Theta2, 1), 1) Theta2(:,2:end)];
 
 
 
